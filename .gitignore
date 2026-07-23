@@ -1,0 +1,4 @@
+# Codex working files and generated inspection output
+work/
+*.inspect.ndjson
+
