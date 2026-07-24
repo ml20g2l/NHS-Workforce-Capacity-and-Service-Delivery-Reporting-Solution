@@ -2,3 +2,6 @@
 work/
 *.inspect.ndjson
 
+# Generated staging extracts (recreated from preserved raw sources)
+04_processed_data/staging/**/*.csv
+04_processed_data/staging/**/*.zip
