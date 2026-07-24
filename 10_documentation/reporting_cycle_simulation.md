@@ -35,6 +35,20 @@ files. Each output contains:
 - isolated absence and service-activity input folders;
 - for Cycle 3 only, `controlled_revision_log.csv`.
 
+Run the automated pre-refresh validation after preparing the three cycles:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File ".\02_source_data\validate_reporting_cycles.ps1"
+```
+
+The script writes auditable results to:
+
+- `05_reporting_controls/refresh_logs/phase7_pre_refresh_validation.csv`;
+- `05_reporting_controls/refresh_logs/phase7_cycle_expected_inputs.csv`.
+
+The Excel-only steps are documented in Korean in
+`03_power_query/엑셀_수동_설정_가이드.md`.
+
 ## Cycle 1 — Q1 baseline
 
 Input months: April to June 2024.
@@ -102,6 +116,7 @@ Static preparation was verified on 24 July 2026:
 |---|---:|
 | Power Query package validator | PASS |
 | M queries present | 31 |
+| Phase 7 pre-refresh controls | 29/29 PASS |
 | Cycle 1 manifest rows / months | 6 / 3 |
 | Cycle 2 manifest rows / months | 8 / 4 |
 | Cycle 3 manifest rows / months | 10 / 4 |

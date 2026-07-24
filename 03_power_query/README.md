@@ -18,6 +18,9 @@ The queries preserve row-level provenance and classify every source row before i
 
 Excel workbook generation tools cannot embed or edit Power Query connection objects directly. Create blank queries in Excel and paste each supplied M expression into **Advanced Editor**, using the query name shown below.
 
+Korean step-by-step instructions are available in
+[`엑셀_수동_설정_가이드.md`](엑셀_수동_설정_가이드.md).
+
 ## 1. Prepare the workforce CSV
 
 The workforce source is distributed as a ZIP archive. Excel Power Query does not provide a simple, reliable folder-combine experience for an arbitrary ZIP container.

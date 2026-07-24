@@ -22,6 +22,9 @@ cycle inputs: an April–June baseline, July addition, and a controlled
 duplicate/revised-file test. The preparation script and validation checklist
 are documented in `10_documentation/reporting_cycle_simulation.md`.
 
+The one-time Excel steps are documented in Korean in
+`03_power_query/엑셀_수동_설정_가이드.md`.
+
 Before runtime testing begins, install and refresh the M queries using
 `03_power_query/power_query_control.xlsx` and the instructions in
 `03_power_query/README.md`.
