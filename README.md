@@ -15,9 +15,16 @@ Each reporting period is treated as a new operational input. Incoming files are 
 - A controlled 148-organisation stable reference has been created; the reporting cohort is the 20 London providers present in all three sources for all 12 months.
 - Power Query connections still require one-time manual registration in Excel Advanced Editor, followed by an actual refresh and result verification.
 
-## Phase 7 Readiness
+## Phase 7 Reporting-Cycle Simulation
 
-Historical monthly files will be introduced sequentially to simulate a recurring reporting cycle. Before the simulation begins, install and refresh the M queries using `03_power_query/power_query_control.xlsx` and the instructions in `03_power_query/README.md`.
+Historical monthly files are introduced sequentially through three reproducible
+cycle inputs: an April–June baseline, July addition, and a controlled
+duplicate/revised-file test. The preparation script and validation checklist
+are documented in `10_documentation/reporting_cycle_simulation.md`.
+
+Before runtime testing begins, install and refresh the M queries using
+`03_power_query/power_query_control.xlsx` and the instructions in
+`03_power_query/README.md`.
 
 The readiness review is documented in `10_documentation/phase_1_to_6_readiness_review.md`.
 

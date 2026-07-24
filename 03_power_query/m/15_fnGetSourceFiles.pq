@@ -62,11 +62,6 @@ let
                             }
                         ),
                         Buffered = Table.Buffer(Sorted),
-                        ActiveContent =
-                            if Table.RowCount(Buffered) = 0 then
-                                null
-                            else
-                                Buffered{0}[Content],
                         AddRank = Table.AddIndexColumn(
                             Buffered,
                             "FileVersionRank",
@@ -80,25 +75,29 @@ let
                             each Table.RowCount(Buffered),
                             Int64.Type
                         ),
-                        AddExactDuplicateFlag = Table.AddColumn(
+                        AddDuplicateContentFlag = Table.AddColumn(
                             AddGroupCount,
-                            "IsExactDuplicateOfActive",
+                            "HasDuplicateContentInGroup",
                             each
-                                if [FileVersionRank] = 1 or ActiveContent = null then
-                                    false
-                                else
-                                    [Content] = ActiveContent,
+                                let
+                                    CurrentContent = [Content],
+                                    MatchingFiles = Table.SelectRows(
+                                        Buffered,
+                                        each [Content] = CurrentContent
+                                    )
+                                in
+                                    Table.RowCount(MatchingFiles) > 1,
                             type logical
                         ),
                         AddDisposition = Table.AddColumn(
-                            AddExactDuplicateFlag,
+                            AddDuplicateContentFlag,
                             "FileDisposition",
                             each
                                 if [FileReportingMonth] = null then
                                     "Invalid filename"
                                 else if [FileVersionRank] = 1 then
                                     "Active"
-                                else if [IsExactDuplicateOfActive] then
+                                else if [HasDuplicateContentInGroup] then
                                     "Duplicate - superseded"
                                 else
                                     "Revised - superseded",
@@ -114,8 +113,8 @@ let
                                     "Only file received for reporting month"
                                 else if [FileVersionRank] = 1 then
                                     "Latest modified file selected for reporting month"
-                                else if [IsExactDuplicateOfActive] then
-                                    "Content matches the selected active file"
+                                else if [HasDuplicateContentInGroup] then
+                                    "Content matches another file received for the reporting month"
                                 else
                                     "Older non-identical file retained as a superseded revision",
                             type text
@@ -140,7 +139,7 @@ let
                     "FileReportingMonth",
                     "FileVersionRank",
                     "FileGroupCount",
-                    "IsExactDuplicateOfActive",
+                    "HasDuplicateContentInGroup",
                     "FileDisposition",
                     "FileSelectionReason"
                 },

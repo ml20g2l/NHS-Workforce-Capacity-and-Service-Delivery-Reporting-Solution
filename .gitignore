@@ -5,3 +5,6 @@ work/
 # Generated staging extracts (recreated from preserved raw sources)
 04_processed_data/staging/**/*.csv
 04_processed_data/staging/**/*.zip
+
+# Generated Phase 7 reporting-cycle inputs
+04_processed_data/reporting_cycles/**
