@@ -11,16 +11,39 @@ let
         VisibleFiles,
         each Text.Lower([Extension]) = ".csv"
     ),
-    KeepMetadata = Table.SelectColumns(
+    AddSourceSizeBytes = Table.AddColumn(
         CSVFiles,
-        {"Content", "Name", "Extension", "Date modified", "Size", "Folder Path"}
+        "SourceSizeBytes",
+        each
+            let
+                AttributeSize =
+                    try Record.FieldOrDefault([Attributes], "Size", null)
+                    otherwise null,
+                ResolvedSize =
+                    if AttributeSize <> null then
+                        Int64.From(AttributeSize)
+                    else
+                        Int64.From(Binary.Length([Content]))
+            in
+                ResolvedSize,
+        Int64.Type
+    ),
+    KeepMetadata = Table.SelectColumns(
+        AddSourceSizeBytes,
+        {
+            "Content",
+            "Name",
+            "Extension",
+            "Date modified",
+            "SourceSizeBytes",
+            "Folder Path"
+        }
     ),
     RenameMetadata = Table.RenameColumns(
         KeepMetadata,
         {
             {"Name", "SourceFile"},
             {"Date modified", "SourceModifiedTimestamp"},
-            {"Size", "SourceSizeBytes"},
             {"Folder Path", "SourceFolder"}
         }
     ),

@@ -123,3 +123,29 @@ Excel의 개인정보 보호 수준을 항상 무시하도록 설정하면 오�
 
 1. 왼쪽 쿼리 목록에서 여섯 매개변수의 아이콘이 보이는 화면
 2. `dimOrganisation`의 전체 오류 메시지와 적용된 단계 화면
+
+## 다음 단계에서 `Size` 열 오류가 발생하는 경우
+
+다음 오류는 `stgWorkforceFiles`, `stgAbsenceFiles` 또는
+`stgServiceFiles`가 `fnGetSourceFiles`를 호출할 때 발생할 수 있습니다.
+
+> Expression.Error: The column 'Size' of the table wasn't found.
+
+일부 Excel Power Query 환경에서는 `Folder.Files` 결과에 파일 크기가
+최상위 `Size` 열로 제공되지 않고 `Attributes` 레코드 안에 들어갑니다.
+최신 `15_fnGetSourceFiles.pq`는 다음 순서로 파일 크기를 계산합니다.
+
+1. `Attributes[Size]`가 있으면 사용
+2. 없으면 `Binary.Length([Content])`로 실제 바이너리 길이 계산
+
+Excel에서 할 작업:
+
+1. `fnGetSourceFiles`를 선택합니다.
+2. **홈 → 고급 편집기**를 엽니다.
+3. 기존 내용을 전부 지웁니다.
+4. 최신 `15_fnGetSourceFiles.pq` 전체 내용을 붙여넣습니다.
+5. **완료**를 선택합니다.
+6. 먼저 `stgWorkforceFiles`의 미리 보기를 새로고침합니다.
+7. 정상이라면 `stgAbsenceFiles`, `stgServiceFiles`도 새로고침합니다.
+
+18번 이후 쿼리를 삭제하거나 다시 만들 필요는 없습니다.

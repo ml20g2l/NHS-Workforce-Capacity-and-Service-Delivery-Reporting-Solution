@@ -109,6 +109,22 @@ foreach ($stagingFile in @(
     }
 }
 
+$sourceFilesFunction = Get-Content -LiteralPath (
+    Join-Path $mFolder "15_fnGetSourceFiles.pq"
+) -Raw
+foreach ($compatibilityToken in @(
+    "Record.FieldOrDefault",
+    "Binary.Length",
+    "SourceSizeBytes"
+)) {
+    if ($sourceFilesFunction -notmatch [regex]::Escape($compatibilityToken)) {
+        $failures.Add("15_fnGetSourceFiles.pq is missing compatibility token $compatibilityToken.")
+    }
+}
+if ($sourceFilesFunction -match '"Date modified",\s*"Size"') {
+    $failures.Add("15_fnGetSourceFiles.pq still requires a top-level Size column.")
+}
+
 if (-not (Test-Path -LiteralPath $referencePath)) {
     $failures.Add("Missing organisation reference: $referencePath")
 } else {
