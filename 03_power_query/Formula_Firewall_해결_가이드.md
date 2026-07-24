@@ -149,3 +149,29 @@ Excel에서 할 작업:
 7. 정상이라면 `stgAbsenceFiles`, `stgServiceFiles`도 새로고침합니다.
 
 18번 이후 쿼리를 삭제하거나 다시 만들 필요는 없습니다.
+
+## `OrganisationMappingStatus` 필드 오류
+
+다음 오류가 발생하면 60–62번 classified 쿼리를 최신 내용으로
+교체합니다.
+
+> Expression.Error: The field 'OrganisationMappingStatus' of the record
+> wasn't found.
+
+수정 대상:
+
+- `dqWorkforceClassified` ← `60_dqWorkforceClassified.pq`
+- `dqAbsenceClassified` ← `61_dqAbsenceClassified.pq`
+- `dqServiceActivityClassified` ← `62_dqServiceActivityClassified.pq`
+
+각 쿼리의 **Advanced Editor**에서 기존 내용을 전체 삭제하고 최신 파일
+내용을 붙여넣습니다. 세 쿼리는 모두 **Only Create Connection**으로
+유지합니다.
+
+교체 후 다음 순서로 미리보기를 새로고침합니다.
+
+1. `dqWorkforceClassified`
+2. `dqAbsenceClassified`
+3. `dqServiceActivityClassified`
+
+세 쿼리가 정상으로 표시되면 24번부터 계속 진행합니다.

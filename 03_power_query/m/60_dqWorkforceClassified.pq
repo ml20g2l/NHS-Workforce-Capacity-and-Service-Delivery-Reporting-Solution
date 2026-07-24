@@ -37,7 +37,7 @@ let
         {{"DuplicateCount", each Table.RowCount(_), Int64.Type}}
     ),
     JoinDuplicateCounts = Table.NestedJoin(
-        PreserveBaseStatus,
+        ReferenceApplied,
         {"ReportingMonth", "OrganisationCode", "StaffGroupName", "DataType"},
         DuplicateCounts,
         {"ReportingMonth", "OrganisationCode", "StaffGroupName", "DataType"},

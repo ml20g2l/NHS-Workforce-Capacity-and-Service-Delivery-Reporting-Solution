@@ -125,6 +125,17 @@ if ($sourceFilesFunction -match '"Date modified",\s*"Size"') {
     $failures.Add("15_fnGetSourceFiles.pq still requires a top-level Size column.")
 }
 
+foreach ($classifiedFile in @(
+    "60_dqWorkforceClassified.pq",
+    "61_dqAbsenceClassified.pq",
+    "62_dqServiceActivityClassified.pq"
+)) {
+    $content = Get-Content -LiteralPath (Join-Path $mFolder $classifiedFile) -Raw
+    if ($content -notmatch '(?s)JoinDuplicateCounts\s*=\s*Table\.NestedJoin\(\s*ReferenceApplied,') {
+        $failures.Add("$classifiedFile drops organisation mapping fields before duplicate-count expansion.")
+    }
+}
+
 if (-not (Test-Path -LiteralPath $referencePath)) {
     $failures.Add("Missing organisation reference: $referencePath")
 } else {
