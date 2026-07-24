@@ -1,4 +1,7 @@
-let
-    Value = Date.StartOfMonth(Date.From(fnGetParameter("ReportingEndMonth")))
-in
-    Value
+#date(2025, 3, 1)
+    meta
+    [
+        IsParameterQuery = true,
+        Type = "Date",
+        IsParameterQueryRequired = true
+    ]

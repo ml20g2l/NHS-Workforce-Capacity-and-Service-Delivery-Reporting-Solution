@@ -60,8 +60,26 @@ foreach ($fileName in $expectedFiles) {
     if ([string]::IsNullOrWhiteSpace($content)) {
         $failures.Add("Empty M file: $fileName")
     }
-    if ($content -notmatch "(?m)^in\s*$|(?m)^in\s+\S+") {
+    $isParameterExpression = $content -match "IsParameterQuery\s*=\s*true"
+    if (-not $isParameterExpression -and $content -notmatch "(?m)^in\s*$|(?m)^in\s+\S+") {
         $failures.Add("No final in expression detected: $fileName")
+    }
+}
+
+foreach ($parameterFile in @(
+    "01_pWorkforceFolder.pq",
+    "02_pAbsenceFolder.pq",
+    "03_pActivityFolder.pq",
+    "04_pReportingStartMonth.pq",
+    "05_pReportingEndMonth.pq",
+    "06_pReferenceFolder.pq"
+)) {
+    $content = Get-Content -LiteralPath (Join-Path $mFolder $parameterFile) -Raw
+    if ($content -notmatch "IsParameterQuery\s*=\s*true") {
+        $failures.Add("$parameterFile is not marked as a native Power Query parameter.")
+    }
+    if ($content -match "fnGetParameter") {
+        $failures.Add("$parameterFile still depends on fnGetParameter and may trigger Formula.Firewall.")
     }
 }
 

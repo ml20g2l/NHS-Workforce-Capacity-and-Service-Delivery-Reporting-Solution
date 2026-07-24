@@ -20,6 +20,8 @@ Excel workbook generation tools cannot embed or edit Power Query connection obje
 
 Korean step-by-step instructions are available in
 [`엑셀_수동_설정_가이드.md`](엑셀_수동_설정_가이드.md).
+For the privacy-firewall repair and exact load choices, see
+[`Formula_Firewall_해결_가이드.md`](Formula_Firewall_해결_가이드.md).
 
 ## 1. Prepare the workforce CSV
 
@@ -55,7 +57,14 @@ The `Parameters` sheet contains the named Excel table `tblParameters` with:
 | ReportingStartMonth | 2024-04-01 |
 | ReportingEndMonth | 2025-03-01 |
 
-Update the four folder paths if the project is moved or cloned to another computer.
+The six `p...` expressions are native Power Query parameters. This avoids a
+Formula.Firewall failure that can occur when a query reads a path from
+`Excel.CurrentWorkbook` and then uses that path to access a file or folder.
+The worksheet table remains a visible control record, but the values used at
+runtime must be updated through **Home → Manage Parameters** in Power Query.
+
+Update the four folder parameters if the project is moved or cloned to another
+computer.
 
 ## 3. Create queries in order
 
@@ -69,7 +78,7 @@ In Excel:
 
 | Order | Query name | M file | Recommended load |
 |---:|---|---|---|
-| 1 | `fnGetParameter` | `00_fnGetParameter.pq` | Connection only |
+| 1 | `fnGetParameter` | `00_fnGetParameter.pq` | Connection only; retained as a documented table-value helper |
 | 2 | `pWorkforceFolder` | `01_pWorkforceFolder.pq` | Connection only |
 | 3 | `pAbsenceFolder` | `02_pAbsenceFolder.pq` | Connection only |
 | 4 | `pActivityFolder` | `03_pActivityFolder.pq` | Connection only |
@@ -100,6 +109,22 @@ In Excel:
 | 29 | `qrySourceFileRegister` | `52_qrySourceFileRegister.pq` | Worksheet table |
 | 30 | `qryDataQualityRuleResults` | `63_dqRuleResults.pq` | Worksheet table |
 | 31 | `qryDataQualityReconciliation` | `64_dqReconciliation.pq` | Worksheet table |
+
+### Formula.Firewall repair for an existing workbook
+
+If the workbook was configured before the native-parameter update, replace the
+Advanced Editor contents of queries 2–7 with the current contents of:
+
+- `01_pWorkforceFolder.pq`
+- `02_pAbsenceFolder.pq`
+- `03_pActivityFolder.pq`
+- `04_pReportingStartMonth.pq`
+- `05_pReportingEndMonth.pq`
+- `06_pReferenceFolder.pq`
+
+After selecting **Done**, each should display as a parameter. If Excel still
+shows it as a normal query, right-click it and select **Convert to Parameter**.
+Then refresh `dimOrganisation` before refreshing the remaining queries.
 
 ## 4. Folder-import controls
 
