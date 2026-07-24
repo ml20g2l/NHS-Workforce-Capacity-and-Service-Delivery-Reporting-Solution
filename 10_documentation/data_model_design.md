@@ -146,3 +146,20 @@ The first version does not require:
 
 Source versions remain recoverable through the raw archive, file manifest, revision comparison and refresh logs.
 
+## 10. Phase 7 readiness update
+
+The controlled organisation dependency is now implemented through
+`02_source_data/reference/dim_organisation.csv` and the Power Query
+`dimOrganisation`.
+
+- The reference contains the 148 provider codes present in workforce, absence
+  and A&E data in every month from April 2024 to March 2025.
+- The approved reporting scope is the 20 London providers within that stable
+  intersection.
+- Clean outputs require both `RecordStatus = Accepted` and
+  `InclusionFlag = true`.
+- `qryDataQualityReconciliation` distinguishes raw, accepted and reportable
+  totals so data-quality exclusions are not confused with reporting-scope
+  exclusions.
+- `qrySourceFileRegister` selects one active file per dataset-month and retains
+  duplicate and revised versions as control evidence.

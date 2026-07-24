@@ -7,8 +7,32 @@ let
             {"ValidationReason", "BaseValidationReason"}
         }
     ),
-    DuplicateCounts = Table.Group(
+    JoinOrganisationReference = Table.NestedJoin(
         PreserveBaseStatus,
+        {"OrganisationCode"},
+        dimOrganisation,
+        {"OrganisationCode"},
+        "_OrganisationReference",
+        JoinKind.LeftOuter
+    ),
+    ReferenceApplied = Table.ExpandTableColumn(
+        JoinOrganisationReference,
+        "_OrganisationReference",
+        {
+            "CanonicalOrganisationName",
+            "InclusionFlag",
+            "ReportingCohort",
+            "MappingStatus"
+        },
+        {
+            "CanonicalOrganisationName",
+            "InclusionFlag",
+            "ReportingCohort",
+            "OrganisationMappingStatus"
+        }
+    ),
+    DuplicateCounts = Table.Group(
+        ReferenceApplied,
         {"ReportingMonth", "OrganisationCode"},
         {{"DuplicateCount", each Table.RowCount(_), Int64.Type}}
     ),
@@ -28,7 +52,7 @@ let
     ),
     OrganisationNameCounts = Table.Group(
         Table.SelectRows(
-            PreserveBaseStatus,
+            ReferenceApplied,
             each [OrganisationCode] <> null
                 and [OrganisationCode] <> "TOTAL"
                 and [OrganisationName] <> null
@@ -71,8 +95,12 @@ let
                 "Rejected"
             else if [DuplicateCount] > 1 then
                 "Rejected"
-            else if [BaseRecordStatus] = "Review Required"
-                or [OrganisationNameVariantCount] > 1 then
+            else if [OrganisationMappingStatus] = null
+                or [BaseRecordStatus] = "Review Required"
+                or (
+                    [OrganisationNameVariantCount] > 1
+                        and [OrganisationMappingStatus] <> "Approved alias history"
+                ) then
                 "Review Required"
             else
                 "Accepted",
@@ -91,7 +119,14 @@ let
                     "Duplicate Month-Organisation activity key"
                 else
                     null,
-                if [OrganisationNameVariantCount] > 1 then
+                if [OrganisationCode] <> "TOTAL"
+                    and [OrganisationMappingStatus] = null then
+                    "Organisation code not found in controlled stable reference"
+                else
+                    null,
+                if [OrganisationNameVariantCount] > 1
+                    and [OrganisationMappingStatus] <> null
+                    and [OrganisationMappingStatus] <> "Approved alias history" then
                     "Organisation code has multiple organisation names in reporting window"
                 else
                     null

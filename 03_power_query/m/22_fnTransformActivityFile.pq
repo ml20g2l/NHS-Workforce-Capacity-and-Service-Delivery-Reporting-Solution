@@ -36,6 +36,18 @@ let
     ActualColumns = Table.ColumnNames(CleanHeaders),
     MissingColumns = List.Difference(ExpectedColumns, ActualColumns),
     UnexpectedColumns = List.Difference(ActualColumns, ExpectedColumns),
+    UnexpectedNonBlankColumns = List.Select(
+        UnexpectedColumns,
+        (columnName as text) =>
+            List.AnyTrue(
+                List.Transform(
+                    Table.Column(CleanHeaders, columnName),
+                    each
+                        _ <> null
+                            and Text.Trim(Text.Clean(Text.From(_))) <> ""
+                )
+            )
+    ),
     AddMissingColumns = List.Accumulate(
         MissingColumns,
         CleanHeaders,
@@ -230,8 +242,12 @@ let
                     & Text.Combine([_InvalidMeasureColumns], ", ")
                 else
                     null,
-                if List.Count(UnexpectedColumns) > 0 then
-                    "Unexpected columns ignored: " & Text.Combine(UnexpectedColumns, ", ")
+                if List.Count(UnexpectedNonBlankColumns) > 0 then
+                    "Unexpected non-blank columns ignored: "
+                        & Text.Combine(UnexpectedNonBlankColumns, ", ")
+                else if List.Count(UnexpectedColumns) > 0 then
+                    "Approved blank schema artifact ignored: "
+                        & Text.Combine(UnexpectedColumns, ", ")
                 else
                     null
             }),
@@ -265,7 +281,7 @@ let
                 or [BookedOver4HoursOther] > [BookedAttendancesOther] then
                 "Rejected"
             else if [PeriodReportingMonth] <> [ReportingMonth]
-                or List.Count(UnexpectedColumns) > 0 then
+                or List.Count(UnexpectedNonBlankColumns) > 0 then
                 "Review Required"
             else
                 "Accepted",

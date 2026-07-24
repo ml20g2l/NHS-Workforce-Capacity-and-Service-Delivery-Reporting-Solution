@@ -1,20 +1,49 @@
 let
     LoadTimestamp = DateTimeZone.FixedUtcNow(),
-    FolderSource = Folder.Files(pAbsenceFolder),
-    VisibleFiles = Table.SelectRows(
-        FolderSource,
-        each [Attributes]?[Hidden]? <> true
-            and [Attributes]?[System]? <> true
-            and not Text.StartsWith([Name], "~$")
+    FileRegister = fnGetSourceFiles(
+        pAbsenceFolder,
+        "NHS Sickness Absence Rates"
     ),
-    CSVFiles = Table.SelectRows(
-        VisibleFiles,
-        each Text.Lower([Extension]) = ".csv"
+    ActiveFiles = Table.SelectRows(
+        FileRegister,
+        each [FileDisposition] = "Active"
     ),
     AddTransformedData = Table.AddColumn(
-        CSVFiles,
+        ActiveFiles,
         "TransformedData",
-        each fnTransformAbsenceFile([Content], [Name], LoadTimestamp),
+        (fileRow as record) =>
+            let
+                Transformed = fnTransformAbsenceFile(
+                    fileRow[Content],
+                    fileRow[SourceFile],
+                    LoadTimestamp
+                ),
+                AddSourceModifiedTimestamp = Table.AddColumn(
+                    Transformed,
+                    "SourceModifiedTimestamp",
+                    each fileRow[SourceModifiedTimestamp],
+                    type nullable datetimezone
+                ),
+                AddSourceSizeBytes = Table.AddColumn(
+                    AddSourceModifiedTimestamp,
+                    "SourceSizeBytes",
+                    each fileRow[SourceSizeBytes],
+                    Int64.Type
+                ),
+                AddFileVersionRank = Table.AddColumn(
+                    AddSourceSizeBytes,
+                    "FileVersionRank",
+                    each fileRow[FileVersionRank],
+                    Int64.Type
+                ),
+                AddFileDisposition = Table.AddColumn(
+                    AddFileVersionRank,
+                    "FileDisposition",
+                    each fileRow[FileDisposition],
+                    type text
+                )
+            in
+                AddFileDisposition,
         type table
     ),
     Combined =
@@ -38,6 +67,10 @@ let
                     "AbsenceRateVariance",
                     "SourceFile",
                     "SourceDataset",
+                    "SourceModifiedTimestamp",
+                    "SourceSizeBytes",
+                    "FileVersionRank",
+                    "FileDisposition",
                     "LoadTimestamp",
                     "RecordStatus",
                     "ValidationReason"

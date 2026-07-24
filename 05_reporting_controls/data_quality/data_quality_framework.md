@@ -12,7 +12,7 @@ lineage and assigned one of three controlled statuses:
 | Review Required | The record may be usable but requires a documented schema, mapping or reconciliation decision. | Excluded until reviewed and approved. |
 | Rejected | A required schema, key, type, range, uniqueness or reporting-grain rule failed. | Excluded from clean outputs and retained in the exception log. |
 
-The detailed 39-rule matrix is maintained in
+The detailed 42-rule matrix is maintained in
 `05_reporting_controls/data_quality/data_quality_framework.xlsx`.
 
 ## Confirmed reporting grains
@@ -55,8 +55,10 @@ April 2024 to March 2025.
 - Twelve monthly files contain 2,384 rows and all retain the 22 canonical
   source fields.
 - The September 2024 file includes six additional headers: five blank headers
-  and one header named `a`. Canonical fields remain available, but affected
-  provider rows are classified as `Review Required`.
+  and one header named `a`. The canonical fields remain available and the extra
+  columns contain no row data. This known artifact is now projected out as an
+  approved schema warning; only unexpected columns containing data require
+  `Review Required`.
 - Each file contains one published aggregate `TOTAL` row. The 12 aggregate rows
   are retained for reconciliation and classified as `Rejected` for the
   provider-level fact to prevent double counting.
@@ -66,7 +68,7 @@ April 2024 to March 2025.
   observed.
 - Three provider codes use multiple published names: `RAX`, `RW1` and `RWD`.
 
-## Current source-profile classification
+## Baseline source-profile classification
 
 | Dataset | Raw rows | Accepted | Review Required | Rejected | Difference |
 |---|---:|---:|---:|---:|---:|
@@ -74,9 +76,19 @@ April 2024 to March 2025.
 | Absence | 3,394 | 3,346 | 48 | 0 | 0 |
 | A&E activity | 2,384 | 2,142 | 230 | 12 | 0 |
 
-These figures are profiling evidence from the current local files. The Excel
-Power Query refresh outputs remain the operational source of truth after the
-queries are installed and refreshed.
+These figures are the pre-reference profiling baseline. They demonstrate the
+three-status logic before the stable organisation reference and approved schema
+decisions are applied. The operational refresh will now:
+
+- classify codes outside the controlled 148-code stable reference as
+  `Review Required`;
+- approve documented alias history held in `dimOrganisation`;
+- treat the blank September A&E trailing columns as an approved schema
+  artifact;
+- expose the 20-provider London cohort as the reportable clean output.
+
+The Excel Power Query refresh outputs remain the operational source of truth
+after the queries are installed and refreshed.
 
 ## Power Query implementation
 
@@ -90,6 +102,9 @@ The Phase 6 implementation adds the following queries:
 | `dqServiceActivityClassified` | Applies A&E grain, duplicate and organisation-name consistency controls. |
 | `qryDataQualityRuleResults` | Returns record counts by dataset, file, month and status. |
 | `qryDataQualityReconciliation` | Reconciles row counts and additive source measures to accepted totals. |
+| `fnGetSourceFiles` | Selects the latest file for each dataset-month and classifies older exact duplicates or revisions. |
+| `qrySourceFileRegister` | Retains the active, duplicate and revised file inventory with selection evidence. |
+| `dimOrganisation` | Applies the controlled stable organisation reference and London reporting cohort. |
 
 All clean queries now read from the classified queries and include only
 `Accepted` records. `Review Required` and `Rejected` records remain available
@@ -102,9 +117,11 @@ Every refresh must demonstrate:
 1. raw rows equal Accepted + Review Required + Rejected;
 2. additive raw totals reconcile to totals segmented by record status;
 3. every difference has a traceable `ValidationReason`;
-4. all six provenance fields are present:
-   `SourceFile`, `SourceDataset`, `ReportingMonth`, `LoadTimestamp`,
-   `RecordStatus` and `ValidationReason`;
+4. all required provenance fields are present:
+   `SourceFile`, `SourceDataset`, `ReportingMonth`,
+   `SourceModifiedTimestamp`, `SourceSizeBytes`, `FileVersionRank`,
+   `FileDisposition`, `LoadTimestamp`, `RecordStatus` and
+   `ValidationReason`;
 5. percentages are recalculated or weighted appropriately and are never summed;
 6. booked A&E appointment fields remain separate subsets and are not added
    again to headline attendance totals.
@@ -122,9 +139,10 @@ out-of-range rates, filename-month mismatches, unmatched reference codes and
 reconciliation breaks are maintained as controlled pipeline tests. They are not
 presented as issues discovered in the current source data.
 
-## Pending dependency
+## Controlled organisation dependency
 
-The unmatched-organisation rule requires the approved `DimOrganisation`
-reference table. Until that reference is populated, the rule remains a
-controlled test and cross-source coverage difference must not be described as a
-data error.
+The unmatched-organisation rule now uses
+`02_source_data/reference/dim_organisation.csv`. The reference contains the
+148 codes observed in all three datasets in all 12 months. Twenty London
+providers have `InclusionFlag = true`; clean reporting outputs require this
+flag in addition to `RecordStatus = Accepted`.

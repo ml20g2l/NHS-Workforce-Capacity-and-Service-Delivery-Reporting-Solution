@@ -3,6 +3,10 @@ let
         "SourceFile",
         "SourceDataset",
         "ReportingMonth",
+        "SourceModifiedTimestamp",
+        "SourceSizeBytes",
+        "FileVersionRank",
+        "FileDisposition",
         "LoadTimestamp",
         "RecordStatus"
     },
@@ -28,7 +32,17 @@ let
     }),
     Summary = Table.Group(
         Combined,
-        {"SourceDataset", "SourceFile", "ReportingMonth", "LoadTimestamp", "RecordStatus"},
+        {
+            "SourceDataset",
+            "SourceFile",
+            "ReportingMonth",
+            "SourceModifiedTimestamp",
+            "SourceSizeBytes",
+            "FileVersionRank",
+            "FileDisposition",
+            "LoadTimestamp",
+            "RecordStatus"
+        },
         {{"RowCount", each Table.RowCount(_), Int64.Type}}
     ),
     Sorted = Table.Sort(

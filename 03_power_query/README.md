@@ -48,10 +48,11 @@ The `Parameters` sheet contains the named Excel table `tblParameters` with:
 | WorkforceFolder | Local workforce staging folder |
 | AbsenceFolder | Local raw absence folder |
 | ActivityFolder | Local raw service-activity folder |
+| ReferenceFolder | Local controlled reference folder |
 | ReportingStartMonth | 2024-04-01 |
 | ReportingEndMonth | 2025-03-01 |
 
-Update the three folder paths if the project is moved or cloned to another computer.
+Update the four folder paths if the project is moved or cloned to another computer.
 
 ## 3. Create queries in order
 
@@ -71,27 +72,31 @@ In Excel:
 | 4 | `pActivityFolder` | `03_pActivityFolder.pq` | Connection only |
 | 5 | `pReportingStartMonth` | `04_pReportingStartMonth.pq` | Connection only |
 | 6 | `pReportingEndMonth` | `05_pReportingEndMonth.pq` | Connection only |
-| 7 | `fnCleanOrganisationCode` | `10_fnCleanOrganisationCode.pq` | Connection only |
-| 8 | `fnParseDate` | `11_fnParseDate.pq` | Connection only |
-| 9 | `fnParseNumber` | `12_fnParseNumber.pq` | Connection only |
-| 10 | `fnMonthFromFileName` | `13_fnMonthFromFileName.pq` | Connection only |
-| 11 | `fnMonthFromAEPeriod` | `14_fnMonthFromAEPeriod.pq` | Connection only |
-| 12 | `fnTransformWorkforceFile` | `20_fnTransformWorkforceFile.pq` | Connection only |
-| 13 | `fnTransformAbsenceFile` | `21_fnTransformAbsenceFile.pq` | Connection only |
-| 14 | `fnTransformActivityFile` | `22_fnTransformActivityFile.pq` | Connection only |
-| 15 | `stgWorkforceFiles` | `30_stgWorkforceFiles.pq` | Connection only |
-| 16 | `stgAbsenceFiles` | `31_stgAbsenceFiles.pq` | Connection only |
-| 17 | `stgServiceFiles` | `32_stgServiceFiles.pq` | Connection only |
-| 18 | `dqWorkforceClassified` | `60_dqWorkforceClassified.pq` | Connection only |
-| 19 | `dqAbsenceClassified` | `61_dqAbsenceClassified.pq` | Connection only |
-| 20 | `dqServiceActivityClassified` | `62_dqServiceActivityClassified.pq` | Connection only |
-| 21 | `qryWorkforceClean` | `40_qryWorkforceClean.pq` | Data Model or worksheet preview |
-| 22 | `qryAbsenceClean` | `41_qryAbsenceClean.pq` | Data Model or worksheet preview |
-| 23 | `qryServiceActivityClean` | `42_qryServiceActivityClean.pq` | Data Model or worksheet preview |
-| 24 | `qryPowerQueryExceptions` | `50_qryPowerQueryExceptions.pq` | Worksheet table |
-| 25 | `qryPowerQueryRefreshSummary` | `51_qryPowerQueryRefreshSummary.pq` | Worksheet table |
-| 26 | `qryDataQualityRuleResults` | `63_dqRuleResults.pq` | Worksheet table |
-| 27 | `qryDataQualityReconciliation` | `64_dqReconciliation.pq` | Worksheet table |
+| 7 | `pReferenceFolder` | `06_pReferenceFolder.pq` | Connection only |
+| 8 | `fnCleanOrganisationCode` | `10_fnCleanOrganisationCode.pq` | Connection only |
+| 9 | `fnParseDate` | `11_fnParseDate.pq` | Connection only |
+| 10 | `fnParseNumber` | `12_fnParseNumber.pq` | Connection only |
+| 11 | `fnMonthFromFileName` | `13_fnMonthFromFileName.pq` | Connection only |
+| 12 | `fnMonthFromAEPeriod` | `14_fnMonthFromAEPeriod.pq` | Connection only |
+| 13 | `fnGetSourceFiles` | `15_fnGetSourceFiles.pq` | Connection only |
+| 14 | `fnTransformWorkforceFile` | `20_fnTransformWorkforceFile.pq` | Connection only |
+| 15 | `fnTransformAbsenceFile` | `21_fnTransformAbsenceFile.pq` | Connection only |
+| 16 | `fnTransformActivityFile` | `22_fnTransformActivityFile.pq` | Connection only |
+| 17 | `dimOrganisation` | `53_dimOrganisation.pq` | Data Model or worksheet preview |
+| 18 | `stgWorkforceFiles` | `30_stgWorkforceFiles.pq` | Connection only |
+| 19 | `stgAbsenceFiles` | `31_stgAbsenceFiles.pq` | Connection only |
+| 20 | `stgServiceFiles` | `32_stgServiceFiles.pq` | Connection only |
+| 21 | `dqWorkforceClassified` | `60_dqWorkforceClassified.pq` | Connection only |
+| 22 | `dqAbsenceClassified` | `61_dqAbsenceClassified.pq` | Connection only |
+| 23 | `dqServiceActivityClassified` | `62_dqServiceActivityClassified.pq` | Connection only |
+| 24 | `qryWorkforceClean` | `40_qryWorkforceClean.pq` | Data Model or worksheet preview |
+| 25 | `qryAbsenceClean` | `41_qryAbsenceClean.pq` | Data Model or worksheet preview |
+| 26 | `qryServiceActivityClean` | `42_qryServiceActivityClean.pq` | Data Model or worksheet preview |
+| 27 | `qryPowerQueryExceptions` | `50_qryPowerQueryExceptions.pq` | Worksheet table |
+| 28 | `qryPowerQueryRefreshSummary` | `51_qryPowerQueryRefreshSummary.pq` | Worksheet table |
+| 29 | `qrySourceFileRegister` | `52_qrySourceFileRegister.pq` | Worksheet table |
+| 30 | `qryDataQualityRuleResults` | `63_dqRuleResults.pq` | Worksheet table |
+| 31 | `qryDataQualityReconciliation` | `64_dqReconciliation.pq` | Worksheet table |
 
 ## 4. Folder-import controls
 
@@ -100,13 +105,15 @@ Each folder query:
 1. reads the configured folder;
 2. removes hidden, system and temporary Excel files;
 3. accepts `.csv` files only;
-4. applies the dataset transformation function;
-5. standardises column names;
-6. adds source filename and fixed UTC load timestamp;
-7. validates the expected schema;
-8. parses dates and numeric fields without silently discarding failed conversions;
-9. cleans organisation codes using trim, clean and uppercase;
-10. retains all staged rows with a status and reason.
+4. groups files by dataset and filename month;
+5. selects the latest modified file and retains older identical or revised versions in the file register;
+6. applies the dataset transformation function;
+7. standardises column names;
+8. adds source filename, file metadata and fixed UTC load timestamp;
+9. validates the expected schema;
+10. parses dates and numeric fields without silently discarding failed conversions;
+11. cleans organisation codes using trim, clean and uppercase;
+12. retains all staged rows with a status and reason.
 
 ## 5. Required provenance columns
 
@@ -117,6 +124,10 @@ Every staging and clean query retains:
 | `SourceFile` | Exact file name that supplied the row |
 | `SourceDataset` | Controlled dataset label |
 | `ReportingMonth` | First day of the normalized reporting month |
+| `SourceModifiedTimestamp` | File-system modified timestamp used for version ordering |
+| `SourceSizeBytes` | File size retained for intake reconciliation |
+| `FileVersionRank` | Version order within dataset and filename month; 1 is selected |
+| `FileDisposition` | Active, duplicate-superseded, revised-superseded or invalid filename |
 | `LoadTimestamp` | Fixed UTC timestamp for the query refresh |
 | `RecordStatus` | Accepted, Review Required or Rejected |
 | `ValidationReason` | Semicolon-separated explanation of all detected issues |
@@ -127,7 +138,7 @@ Every staging and clean query retains:
 
 | Status | Meaning | Reporting use |
 |---|---|---|
-| `Accepted` | Required schema and row checks passed | Included in clean output |
+| `Accepted` | Required schema, reference and row checks passed | Included only when the organisation is also in the approved reporting cohort |
 | `Review Required` | The record may be usable but requires a documented decision, such as a renamed organisation, unexpected ignored column or filename/date mismatch | Excluded from clean output until reviewed |
 | `Rejected` | Required fields, types, ranges or schema failed | Excluded from clean output |
 
@@ -155,7 +166,8 @@ The clean queries retain `Accepted` rows only. The `stg...` and `dq...Classified
 ### A&E activity
 
 - Exactly 22 canonical source columns are selected.
-- Unexpected columns are ignored but generate Review Required.
+- Unexpected columns containing data generate Review Required.
+- Blank trailing schema artifacts are projected out and recorded as an approved warning after the canonical 22 fields are confirmed.
 - All 18 activity measures must be numeric and non-negative.
 - The period text is reconciled to the month in the source filename.
 - Each over-four-hour count must not exceed its corresponding attendance count.
@@ -173,3 +185,5 @@ Before using the clean tables:
 5. confirm there are no duplicate candidate keys at the intended grains;
 6. reconcile staged, accepted, Review Required and Rejected row counts and measure totals;
 7. do not publish if a critical schema or required-field failure is unresolved.
+8. confirm `qrySourceFileRegister` contains one Active file per dataset-month and explains every superseded version;
+9. confirm reportable totals equal accepted totals less documented reporting-scope exclusions.
