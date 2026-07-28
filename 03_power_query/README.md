@@ -12,16 +12,11 @@ The queries preserve row-level provenance and classify every source row before i
 
 ## Files
 
-- `power_query_control.xlsx` — Excel control workbook containing the named table `tblParameters`, query catalogue, setup steps and validation rules.
+- `power_query_control_full_year_baseline.xlsx` — final Excel control and manager-report workbook containing the named table `tblParameters`, refreshed model outputs, PivotTables and validation controls.
 - `prepare_workforce_extract.ps1` — extracts the required organisation-and-staff-group CSV from the preserved workforce ZIP.
 - `m/` — Power Query M expressions, numbered in the recommended creation order.
 
 Excel workbook generation tools cannot embed or edit Power Query connection objects directly. Create blank queries in Excel and paste each supplied M expression into **Advanced Editor**, using the query name shown below.
-
-Korean step-by-step instructions are available in
-[`엑셀_수동_설정_가이드.md`](엑셀_수동_설정_가이드.md).
-For the privacy-firewall repair and exact load choices, see
-[`Formula_Firewall_해결_가이드.md`](Formula_Firewall_해결_가이드.md).
 
 ## 1. Prepare the workforce CSV
 
@@ -44,7 +39,7 @@ Generated staging CSV files are excluded from Git because they can be reproduced
 
 ## 2. Open the control workbook
 
-Open `03_power_query/power_query_control.xlsx`.
+Open `03_power_query/power_query_control_full_year_baseline.xlsx`.
 
 The `Parameters` sheet contains the named Excel table `tblParameters` with:
 
@@ -109,22 +104,38 @@ In Excel:
 | 29 | `qrySourceFileRegister` | `52_qrySourceFileRegister.pq` | Worksheet table |
 | 30 | `qryDataQualityRuleResults` | `63_dqRuleResults.pq` | Worksheet table |
 | 31 | `qryDataQualityReconciliation` | `64_dqReconciliation.pq` | Worksheet table |
+| 32 | `DimDate` | `70_dimDate.pq` | Worksheet preview + Data Model |
+| 33 | `dimStaffGroup` | `71_dimStaffGroup.pq` | Worksheet preview + Data Model |
+| 34 | `FactWorkforce` | `72_factWorkforce.pq` | Data Model |
+| 35 | `FactAbsence` | `73_factAbsence.pq` | Data Model |
+| 36 | `FactServiceActivity` | `74_factServiceActivity.pq` | Data Model |
+| 37 | `wrkWorkforceOrgMonth` | `75_wrkWorkforceOrgMonth.pq` | Connection only |
+| 38 | `wrkAbsenceOrgMonth` | `76_wrkAbsenceOrgMonth.pq` | Connection only |
+| 39 | `wrkServiceOrgMonth` | `77_wrkServiceOrgMonth.pq` | Connection only |
+| 40 | `FactOrganisationMonthlyPerformance` | `78_factOrganisationMonthlyPerformance.pq` | Worksheet table + Data Model |
 
-### Formula.Firewall repair for an existing workbook
+Queries 32–40 are the model-ready reporting layer added after the recurring
+refresh simulation. They preserve the source-specific grains and create a
+safe Month × Organisation summary for cross-source PivotTable reporting.
 
-If the workbook was configured before the native-parameter update, replace the
-Advanced Editor contents of queries 2–7 with the current contents of:
+### Data Model relationships
 
-- `01_pWorkforceFolder.pq`
-- `02_pAbsenceFolder.pq`
-- `03_pActivityFolder.pq`
-- `04_pReportingStartMonth.pq`
-- `05_pReportingEndMonth.pq`
-- `06_pReferenceFolder.pq`
+Create active one-to-many, single-direction relationships:
 
-After selecting **Done**, each should display as a parameter. If Excel still
-shows it as a normal query, right-click it and select **Convert to Parameter**.
-Then refresh `dimOrganisation` before refreshing the remaining queries.
+| One side | Column | Many side | Column |
+|---|---|---|---|
+| `DimDate` | `MonthKey` | `FactWorkforce` | `MonthKey` |
+| `DimDate` | `MonthKey` | `FactAbsence` | `MonthKey` |
+| `DimDate` | `MonthKey` | `FactServiceActivity` | `MonthKey` |
+| `DimDate` | `MonthKey` | `FactOrganisationMonthlyPerformance` | `MonthKey` |
+| `dimOrganisation` | `OrganisationCode` | `FactWorkforce` | `OrganisationKey` |
+| `dimOrganisation` | `OrganisationCode` | `FactAbsence` | `OrganisationKey` |
+| `dimOrganisation` | `OrganisationCode` | `FactServiceActivity` | `OrganisationKey` |
+| `dimOrganisation` | `OrganisationCode` | `FactOrganisationMonthlyPerformance` | `OrganisationKey` |
+| `dimStaffGroup` | `StaffGroupKey` | `FactWorkforce` | `StaffGroupKey` |
+
+Do not create fact-to-fact relationships. The three `wrk...OrgMonth` queries
+remain connection-only and feed the organisation-month summary.
 
 ## 4. Folder-import controls
 

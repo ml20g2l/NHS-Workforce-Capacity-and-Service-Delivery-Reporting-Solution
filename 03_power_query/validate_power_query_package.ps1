@@ -39,7 +39,16 @@ $expectedFiles = @(
     "61_dqAbsenceClassified.pq",
     "62_dqServiceActivityClassified.pq",
     "63_dqRuleResults.pq",
-    "64_dqReconciliation.pq"
+    "64_dqReconciliation.pq",
+    "70_dimDate.pq",
+    "71_dimStaffGroup.pq",
+    "72_factWorkforce.pq",
+    "73_factAbsence.pq",
+    "74_factServiceActivity.pq",
+    "75_wrkWorkforceOrgMonth.pq",
+    "76_wrkAbsenceOrgMonth.pq",
+    "77_wrkServiceOrgMonth.pq",
+    "78_factOrganisationMonthlyPerformance.pq"
 )
 
 $failures = [System.Collections.Generic.List[string]]::new()
@@ -133,6 +142,28 @@ foreach ($classifiedFile in @(
     $content = Get-Content -LiteralPath (Join-Path $mFolder $classifiedFile) -Raw
     if ($content -notmatch '(?s)JoinDuplicateCounts\s*=\s*Table\.NestedJoin\(\s*ReferenceApplied,') {
         $failures.Add("$classifiedFile drops organisation mapping fields before duplicate-count expansion.")
+    }
+}
+
+$modelTokens = @{
+    "70_dimDate.pq" = @("MonthKey", "FinancialYear", "FinancialQuarter")
+    "71_dimStaffGroup.pq" = @("StaffGroupKey", "StaffGroupSortOrder")
+    "72_factWorkforce.pq" = @("OrganisationKey", "StaffGroupKey", "Headcount", "FTE")
+    "73_factAbsence.pq" = @("OrganisationKey", "SicknessAbsenceRate")
+    "74_factServiceActivity.pq" = @("TotalAttendances", "FourHourPerformanceRate")
+    "78_factOrganisationMonthlyPerformance.pq" = @(
+        "EstimatedAvailableFTE",
+        "AttendancesPerAvailableFTE",
+        "AllSourcesMatchedFlag",
+        "DataQualityStatus"
+    )
+}
+foreach ($modelFile in $modelTokens.Keys) {
+    $content = Get-Content -LiteralPath (Join-Path $mFolder $modelFile) -Raw
+    foreach ($token in $modelTokens[$modelFile]) {
+        if ($content -notmatch [regex]::Escape($token)) {
+            $failures.Add("$modelFile is missing model token $token.")
+        }
     }
 }
 

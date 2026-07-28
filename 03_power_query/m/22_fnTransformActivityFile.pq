@@ -168,8 +168,8 @@ let
     AddLoadTimestamp = Table.AddColumn(
         AddSourceDataset,
         "LoadTimestamp",
-        each loadTimestamp,
-        type datetimezone
+        each DateTimeZone.RemoveZone(loadTimestamp),
+        type datetime
     ),
     AddValidationReason = Table.AddColumn(
         AddLoadTimestamp,
