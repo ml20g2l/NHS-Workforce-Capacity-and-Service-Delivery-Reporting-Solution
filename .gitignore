@@ -8,3 +8,11 @@ work/
 
 # Generated Phase 7 reporting-cycle inputs
 04_processed_data/reporting_cycles/**
+
+# Local troubleshooting and manual Excel guides
+03_power_query/Formula_Firewall_해결_가이드.md
+03_power_query/엑셀_수동_설정_가이드.md
+
+# Intermediate Power Query workbooks; publish only the final full-year workbook
+03_power_query/power_query_control.xlsx
+03_power_query/power_query_control_cycle*.xlsx

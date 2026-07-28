@@ -10,24 +10,25 @@ Each reporting period is treated as a new operational input. Incoming files are 
 - Phase 2 official source files and source register completed for April 2024 to March 2025.
 - Phase 3 KPI dictionary completed using confirmed source fields.
 - Phase 4 star-schema design completed, including a safe organisation-month summary grain.
-- Phase 5 Power Query package completed with 31 ordered M queries, file-version selection and row-level provenance.
+- Phase 5 Power Query package completed with 40 ordered M queries, file-version selection, row-level provenance and a model-ready reporting layer.
 - Phase 6 data-quality framework completed with a 42-rule matrix, exception outputs and reconciliation controls.
+- Phase 7 recurring reporting simulation completed for the Q1 baseline, July extension and controlled duplicate/revised-file scenario.
+- The full-year Excel reporting workbook now includes refreshed outputs, active Data Model relationships and three manager-facing PivotTable views.
 - A controlled 148-organisation stable reference has been created; the reporting cohort is the 20 London providers present in all three sources for all 12 months.
-- Power Query connections still require one-time manual registration in Excel Advanced Editor, followed by an actual refresh and result verification.
 
 ## Phase 7 Reporting-Cycle Simulation
 
-Historical monthly files are introduced sequentially through three reproducible
-cycle inputs: an April–June baseline, July addition, and a controlled
-duplicate/revised-file test. The preparation script and validation checklist
-are documented in `10_documentation/reporting_cycle_simulation.md`.
+Historical monthly files were introduced sequentially through three
+reproducible cycle inputs: an April–June baseline, July addition, and a
+controlled duplicate/revised-file test. The completed simulation and
+validation evidence are documented in
+`10_documentation/reporting_cycle_simulation.md`.
 
-The one-time Excel steps are documented in Korean in
-`03_power_query/엑셀_수동_설정_가이드.md`.
-
-Before runtime testing begins, install and refresh the M queries using
-`03_power_query/power_query_control.xlsx` and the instructions in
-`03_power_query/README.md`.
+The final Excel deliverable is
+`03_power_query/power_query_control_full_year_baseline.xlsx`. It contains the
+full April 2024 to March 2025 reporting period, refreshed Power Query outputs,
+the star-schema Data Model and manager-facing PivotTables. Query definitions,
+load roles and relationships are documented in `03_power_query/README.md`.
 
 The readiness review is documented in `10_documentation/phase_1_to_6_readiness_review.md`.
 

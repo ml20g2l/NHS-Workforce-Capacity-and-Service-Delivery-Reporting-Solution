@@ -21,8 +21,12 @@ let
                 AddSourceModifiedTimestamp = Table.AddColumn(
                     Transformed,
                     "SourceModifiedTimestamp",
-                    each fileRow[SourceModifiedTimestamp],
-                    type nullable datetimezone
+                    each
+                        if fileRow[SourceModifiedTimestamp] = null then
+                            null
+                        else
+                            DateTime.From(fileRow[SourceModifiedTimestamp]),
+                    type nullable datetime
                 ),
                 AddSourceSizeBytes = Table.AddColumn(
                     AddSourceModifiedTimestamp,

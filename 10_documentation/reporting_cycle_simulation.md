@@ -46,8 +46,11 @@ The script writes auditable results to:
 - `05_reporting_controls/refresh_logs/phase7_pre_refresh_validation.csv`;
 - `05_reporting_controls/refresh_logs/phase7_cycle_expected_inputs.csv`.
 
-The Excel-only steps are documented in Korean in
-`03_power_query/엑셀_수동_설정_가이드.md`.
+For every cycle, update the applicable native Power Query parameters through
+**Home > Manage Parameters** and mirror the same values in `tblParameters`.
+The native parameters are the runtime values; the worksheet table is the
+manager-visible control record. Changing only the worksheet table does not
+redirect the folder queries.
 
 ## Cycle 1 — Q1 baseline
 
