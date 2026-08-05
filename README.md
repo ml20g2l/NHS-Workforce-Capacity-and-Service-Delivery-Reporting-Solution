@@ -18,6 +18,7 @@ Rather than analysing a one-off historical dataset, each reporting period is tre
 - A recurring-reporting simulation covering a baseline load, a new-period addition and a controlled duplicate/revised-file scenario.
 - An Excel reporting workbook with refreshed outputs, active Data Model relationships and manager-facing PivotTable views.
 - A Power BI self-service dashboard with six KPI-led reporting experiences, including a hidden organisation drill-through page.
+- A reproducible ad hoc investigation into deteriorating four-hour performance despite broadly stable workforce FTE.
 
 ## Power BI dashboard
 
@@ -38,6 +39,10 @@ The hidden **Organisation Detail** page supports drill-through from organisation
 Historical monthly files were introduced sequentially through three reproducible cycle inputs: an April–June baseline, a July addition, and a controlled duplicate/revised-file test. The completed evidence is documented in [`10_documentation/reporting_cycle_simulation.md`](10_documentation/reporting_cycle_simulation.md).
 
 The final Excel delivery is [`03_power_query/power_query_control_full_year_baseline.xlsx`](03_power_query/power_query_control_full_year_baseline.xlsx). Power Query definitions, load roles and relationships are documented in [`03_power_query/README.md`](03_power_query/README.md). Power BI model notes, DAX measures, controls and the dashboard theme are in [`07_power_bi`](07_power_bi).
+
+## Ad hoc investigation
+
+The Phase 10 investigation screens the London cohort for providers with broadly stable workforce FTE and a material deterioration in four-hour performance. It separates observed patterns from causal claims and documents the operational evidence required for follow-up. See [`08_ad_hoc_analysis/four_hour_performance_investigation.md`](08_ad_hoc_analysis/four_hour_performance_investigation.md).
 
 ## Repository structure
 
