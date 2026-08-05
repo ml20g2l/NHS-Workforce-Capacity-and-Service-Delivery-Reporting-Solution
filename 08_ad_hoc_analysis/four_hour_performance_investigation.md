@@ -80,4 +80,4 @@ The public data is aggregate and monthly. It cannot establish causality or captu
 
 ## Reproducibility
 
-Run [`analyse_four_hour_performance.py`](analyse_four_hour_performance.py) from the repository root to recreate the selection screen, provider driver summary, monthly series and chart in `outputs/`. The analysis uses the preserved NHS public source files and the project workforce reporting extract.
+Run [`four_hour_performance_investigation.ipynb`](four_hour_performance_investigation.ipynb) for a reader-facing, executed analysis notebook. The supporting [`analyse_four_hour_performance.py`](analyse_four_hour_performance.py) remains available as the headless reproducibility runner and recreates the selection screen, provider driver summary, monthly series and chart in `outputs/`. The analysis uses the preserved NHS public source files and the project workforce reporting extract.

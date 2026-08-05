@@ -34,6 +34,16 @@ Visible pages:
 
 The hidden **Organisation Detail** page supports drill-through from organisation-level visuals and retains the reporting-month selection. Each visible page includes clear slicers and a reset-filter control.
 
+### Dashboard gallery
+
+| Executive Overview | Workforce & Availability |
+|---|---|
+| <img src="07_power_bi/screenshots/01_executive_overview.png" alt="Executive Overview dashboard page" width="520" /> | <img src="07_power_bi/screenshots/02_workforce_availability.png" alt="Workforce and Availability dashboard page" width="520" /> |
+| **Demand & Delivery** | **Capacity Pressure** |
+| <img src="07_power_bi/screenshots/03_demand_delivery.png" alt="Demand and Delivery dashboard page" width="520" /> | <img src="07_power_bi/screenshots/04_capacity_pressure.png" alt="Capacity Pressure dashboard page" width="520" /> |
+| **Data Quality & Refresh** | **Organisation Detail drill-through** |
+| <img src="07_power_bi/screenshots/05_data_quality_refresh.png" alt="Data Quality and Refresh dashboard page" width="520" /> | <img src="07_power_bi/screenshots/06_organisation_detail.png" alt="Organisation Detail drill-through page" width="520" /> |
+
 ## Reporting controls
 
 Historical monthly files were introduced sequentially through three reproducible cycle inputs: an April–June baseline, a July addition, and a controlled duplicate/revised-file test. The completed evidence is documented in [`10_documentation/reporting_cycle_simulation.md`](10_documentation/reporting_cycle_simulation.md).
@@ -42,7 +52,7 @@ The final Excel delivery is [`03_power_query/power_query_control_full_year_basel
 
 ## Ad hoc investigation
 
-The Phase 10 investigation screens the London cohort for providers with broadly stable workforce FTE and a material deterioration in four-hour performance. It separates observed patterns from causal claims and documents the operational evidence required for follow-up. See [`08_ad_hoc_analysis/four_hour_performance_investigation.md`](08_ad_hoc_analysis/four_hour_performance_investigation.md).
+The Phase 10 investigation screens the London cohort for providers with broadly stable workforce FTE and a material deterioration in four-hour performance. It separates observed patterns from causal claims and documents the operational evidence required for follow-up. See [`08_ad_hoc_analysis/four_hour_performance_investigation.md`](08_ad_hoc_analysis/four_hour_performance_investigation.md) or run the companion [`four_hour_performance_investigation.ipynb`](08_ad_hoc_analysis/four_hour_performance_investigation.ipynb).
 
 ### Phase 11 — Reusable reporting skill
 
