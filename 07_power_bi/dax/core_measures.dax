@@ -1,0 +1,560 @@
+-- NHS Workforce Capacity & Service Delivery Reporting
+-- Core Power BI measures
+-- Table names assume the naming convention in power_bi_model_load_plan.md.
+
+-- ============================================================
+-- Time context
+-- ============================================================
+
+Latest Visible Month =
+MAXX(
+    ALLSELECTED(DimDate[ReportingMonth]),
+    DimDate[ReportingMonth]
+)
+
+Latest Visible Month Label =
+FORMAT([Latest Visible Month], "mmm yyyy")
+
+-- ============================================================
+-- Workforce and availability
+-- ============================================================
+
+Total FTE =
+SUM(FactOrganisationMonthlyPerformance[WorkforceFTE])
+
+Headcount =
+SUM(FactOrganisationMonthlyPerformance[WorkforceHeadcount])
+
+Estimated Available FTE =
+SUM(FactOrganisationMonthlyPerformance[EstimatedAvailableFTE])
+
+FTE Days Lost =
+SUM(FactAbsence[FTEDaysLost])
+
+FTE Days Available =
+SUM(FactAbsence[FTEDaysAvailable])
+
+Sickness Absence Rate =
+DIVIDE([FTE Days Lost], [FTE Days Available])
+
+Staff Mix FTE =
+SUM(FactWorkforceReporting[FTE])
+
+Staff Mix Headcount =
+SUM(FactWorkforceReporting[Headcount])
+
+Total FTE Latest =
+VAR LatestMonth = [Latest Visible Month]
+RETURN
+    CALCULATE(
+        [Total FTE],
+        REMOVEFILTERS(DimDate),
+        DimDate[ReportingMonth] = LatestMonth
+    )
+
+Headcount Latest =
+VAR LatestMonth = [Latest Visible Month]
+RETURN
+    CALCULATE(
+        [Headcount],
+        REMOVEFILTERS(DimDate),
+        DimDate[ReportingMonth] = LatestMonth
+    )
+
+Estimated Available FTE Latest =
+VAR LatestMonth = [Latest Visible Month]
+RETURN
+    CALCULATE(
+        [Estimated Available FTE],
+        REMOVEFILTERS(DimDate),
+        DimDate[ReportingMonth] = LatestMonth
+    )
+
+Sickness Absence Rate Latest =
+VAR LatestMonth = [Latest Visible Month]
+RETURN
+    CALCULATE(
+        [Sickness Absence Rate],
+        REMOVEFILTERS(DimDate),
+        DimDate[ReportingMonth] = LatestMonth
+    )
+
+FTE Days Lost Latest =
+VAR LatestMonth = [Latest Visible Month]
+RETURN
+    CALCULATE(
+        [FTE Days Lost],
+        REMOVEFILTERS(DimDate),
+        DimDate[ReportingMonth] = LatestMonth
+    )
+
+Staff Mix FTE Latest =
+VAR LatestMonth = [Latest Visible Month]
+RETURN
+    CALCULATE(
+        [Staff Mix FTE],
+        REMOVEFILTERS(DimDate),
+        DimDate[ReportingMonth] = LatestMonth
+    )
+
+Staff Mix Headcount Latest =
+VAR LatestMonth = [Latest Visible Month]
+RETURN
+    CALCULATE(
+        [Staff Mix Headcount],
+        REMOVEFILTERS(DimDate),
+        DimDate[ReportingMonth] = LatestMonth
+    )
+
+Previous Month Total FTE =
+VAR PriorMonthDate = EDATE([Latest Visible Month], -1)
+RETURN
+    CALCULATE(
+        [Total FTE],
+        REMOVEFILTERS(DimDate),
+        DimDate[ReportingMonth] = PriorMonthDate
+    )
+
+Previous Month Available FTE =
+VAR PriorMonthDate = EDATE([Latest Visible Month], -1)
+RETURN
+    CALCULATE(
+        [Estimated Available FTE],
+        REMOVEFILTERS(DimDate),
+        DimDate[ReportingMonth] = PriorMonthDate
+    )
+
+Previous Month Absence Rate =
+VAR PriorMonthDate = EDATE([Latest Visible Month], -1)
+RETURN
+    CALCULATE(
+        [Sickness Absence Rate],
+        REMOVEFILTERS(DimDate),
+        DimDate[ReportingMonth] = PriorMonthDate
+    )
+
+FTE Change =
+[Total FTE Latest] - [Previous Month Total FTE]
+
+FTE Change % =
+DIVIDE([FTE Change], [Previous Month Total FTE])
+
+Available FTE Change =
+[Estimated Available FTE Latest] - [Previous Month Available FTE]
+
+Available FTE Change % =
+DIVIDE([Available FTE Change], [Previous Month Available FTE])
+
+Absence Rate Change =
+[Sickness Absence Rate Latest] - [Previous Month Absence Rate]
+
+-- ============================================================
+-- Demand and delivery
+-- ============================================================
+
+Total Attendances =
+SUM(FactServiceActivity[TotalAttendances])
+
+Attendances Within 4 Hours =
+SUM(FactServiceActivity[AttendancesWithin4Hours])
+
+Attendances Over 4 Hours =
+SUM(FactServiceActivity[AttendancesOver4Hours])
+
+Four-Hour Performance =
+DIVIDE([Attendances Within 4 Hours], [Total Attendances])
+
+Emergency Admissions =
+SUM(FactServiceActivity[TotalEmergencyAdmissions])
+
+12+ Hour DTA Waits =
+SUM(FactServiceActivity[Waits12PlusHoursDTA])
+
+Total Attendances Latest =
+VAR LatestMonth = [Latest Visible Month]
+RETURN
+    CALCULATE(
+        [Total Attendances],
+        REMOVEFILTERS(DimDate),
+        DimDate[ReportingMonth] = LatestMonth
+    )
+
+Four-Hour Performance Latest =
+VAR LatestMonth = [Latest Visible Month]
+RETURN
+    CALCULATE(
+        [Four-Hour Performance],
+        REMOVEFILTERS(DimDate),
+        DimDate[ReportingMonth] = LatestMonth
+    )
+
+Previous Month Attendances =
+VAR PriorMonthDate = EDATE([Latest Visible Month], -1)
+RETURN
+    CALCULATE(
+        [Total Attendances],
+        REMOVEFILTERS(DimDate),
+        DimDate[ReportingMonth] = PriorMonthDate
+    )
+
+Previous Month Four-Hour Performance =
+VAR PriorMonthDate = EDATE([Latest Visible Month], -1)
+RETURN
+    CALCULATE(
+        [Four-Hour Performance],
+        REMOVEFILTERS(DimDate),
+        DimDate[ReportingMonth] = PriorMonthDate
+    )
+
+Demand Change =
+[Total Attendances Latest] - [Previous Month Attendances]
+
+Demand Change % =
+DIVIDE([Demand Change], [Previous Month Attendances])
+
+Four-Hour Performance Change =
+[Four-Hour Performance Latest] - [Previous Month Four-Hour Performance]
+
+-- ============================================================
+-- Capacity pressure
+-- ============================================================
+
+Attendances per Available FTE =
+DIVIDE([Total Attendances], [Estimated Available FTE])
+
+Attendances per Available FTE Latest =
+VAR LatestMonth = [Latest Visible Month]
+RETURN
+    CALCULATE(
+        [Attendances per Available FTE],
+        REMOVEFILTERS(DimDate),
+        DimDate[ReportingMonth] = LatestMonth
+    )
+
+Previous Month Attendances per Available FTE =
+VAR PriorMonthDate = EDATE([Latest Visible Month], -1)
+RETURN
+    CALCULATE(
+        [Attendances per Available FTE],
+        REMOVEFILTERS(DimDate),
+        DimDate[ReportingMonth] = PriorMonthDate
+    )
+
+Attendances per Available FTE Change % =
+DIVIDE(
+    [Attendances per Available FTE Latest]
+        - [Previous Month Attendances per Available FTE],
+    [Previous Month Attendances per Available FTE]
+)
+
+-- ============================================================
+-- Target and variance
+-- ============================================================
+
+Four-Hour Reference Target =
+VAR LatestMonth = [Latest Visible Month]
+RETURN
+    MAXX(
+        FILTER(
+            ALL(KPI_Targets),
+            KPI_Targets[MetricKey] = "FOUR_HOUR_PERFORMANCE"
+                && KPI_Targets[EffectiveFrom] <= LatestMonth
+                && KPI_Targets[EffectiveTo] >= LatestMonth
+        ),
+        KPI_Targets[TargetValue]
+    )
+
+Four-Hour Variance to Reference =
+[Four-Hour Performance Latest] - [Four-Hour Reference Target]
+
+-- ============================================================
+-- Data quality and refresh control
+-- ============================================================
+
+Source Records =
+SUM(DataQualityRuleResults[RecordCount])
+
+Accepted Records =
+CALCULATE(
+    [Source Records],
+    DataQualityRuleResults[RecordStatus] = "Accepted"
+)
+
+Review Required Records =
+CALCULATE(
+    [Source Records],
+    DataQualityRuleResults[RecordStatus] = "Review Required"
+)
+
+Rejected Records =
+CALCULATE(
+    [Source Records],
+    DataQualityRuleResults[RecordStatus] = "Rejected"
+)
+
+Expected Controlled Exclusions =
+COUNTROWS(
+    FILTER(
+        Exceptions,
+        Exceptions[RecordStatus] = "Rejected"
+            && CONTAINSSTRING(
+                LOWER(Exceptions[ValidationReason]),
+                "published aggregate total row"
+            )
+    )
+)
+
+Unexpected Rejected Records =
+VAR UnexpectedCount =
+    [Rejected Records] - [Expected Controlled Exclusions]
+RETURN
+    MAX(0, UnexpectedCount)
+
+Acceptance Rate =
+DIVIDE([Accepted Records], [Source Records])
+
+Current Exceptions =
+COUNTROWS(Exceptions)
+
+Missing Organisation Code Exceptions =
+COUNTROWS(
+    FILTER(
+        Exceptions,
+        ISBLANK(Exceptions[OrganisationCode])
+            || Exceptions[OrganisationCode] = ""
+    )
+)
+
+Unmatched Organisation Exceptions =
+COUNTROWS(
+    FILTER(
+        Exceptions,
+        Exceptions[OrganisationMappingStatus] <> "Matched"
+            && NOT ISBLANK(Exceptions[OrganisationMappingStatus])
+    )
+)
+
+Source Files Processed =
+CALCULATE(
+    DISTINCTCOUNT(SourceFileRegister[SourceFile]),
+    SourceFileRegister[FileDisposition] = "Active"
+)
+
+Duplicate or Superseded Files =
+COUNTROWS(
+    FILTER(
+        SourceFileRegister,
+        SourceFileRegister[FileDisposition] <> "Active"
+    )
+)
+
+Active Revised Periods =
+COUNTROWS(
+    FILTER(
+        SourceFileRegister,
+        SourceFileRegister[FileVersionRank] = 1
+            && SourceFileRegister[FileGroupCount] > 1
+    )
+)
+
+Latest Refresh Timestamp =
+MAX(RefreshSummary[LoadTimestamp])
+
+Incomplete Source Matches =
+VAR LatestMonth = [Latest Visible Month]
+RETURN
+    CALCULATE(
+        COUNTROWS(FactOrganisationMonthlyPerformance),
+        REMOVEFILTERS(DimDate),
+        DimDate[ReportingMonth] = LatestMonth,
+        FactOrganisationMonthlyPerformance[AllSourcesMatchedFlag] = FALSE()
+    )
+
+-- ============================================================
+-- Risk and management alert text
+-- ============================================================
+
+Risk Flag =
+VAR IncompleteMatches = [Incomplete Source Matches]
+VAR UnexpectedRejected = [Unexpected Rejected Records]
+VAR DeliveryBelowReference =
+    [Four-Hour Performance Latest] < [Four-Hour Reference Target]
+VAR DemandUpCapacityDown =
+    [Demand Change %] > 0
+        && [Available FTE Change %] < 0
+VAR AbsenceUp = [Absence Rate Change] > 0
+RETURN
+    SWITCH(
+        TRUE(),
+        IncompleteMatches > 0, "Critical - data incomplete",
+        UnexpectedRejected > 0, "High - unexpected rejected records",
+        DeliveryBelowReference && DemandUpCapacityDown, "High - delivery and capacity pressure",
+        DeliveryBelowReference, "High - delivery below reference",
+        DemandUpCapacityDown, "High - demand up and capacity down",
+        AbsenceUp, "Medium - absence increased",
+        "Within controlled thresholds"
+    )
+
+Management Alert =
+VAR Risk = [Risk Flag]
+RETURN
+    SWITCH(
+        Risk,
+        "Critical - data incomplete", "Investigate incomplete source matching before interpreting performance.",
+        "High - unexpected rejected records", "Review unexpected rejected records before publication.",
+        "High - delivery and capacity pressure", "Demand increased, available capacity fell and four-hour performance is below the reference.",
+        "High - delivery below reference", "Four-hour performance is below the 78% March 2025 reference objective.",
+        "High - demand up and capacity down", "Demand increased while estimated available capacity decreased.",
+        "Medium - absence increased", "Sickness absence increased from the previous month.",
+        "No current management alert."
+    )
+
+Risk Priority =
+SWITCH(
+    [Risk Flag],
+    "Critical - data incomplete", 1,
+    "High - unexpected rejected records", 2,
+    "High - delivery and capacity pressure", 2,
+    "High - delivery below reference", 2,
+    "High - demand up and capacity down", 2,
+    "Medium - absence increased", 3,
+    4
+)
+
+Risk Colour =
+SWITCH(
+    [Risk Priority],
+    1, "#C62828",
+    2, "#D97706",
+    3, "#E9C46A",
+    "#2E7D32"
+)
+
+Data Quality Status Latest =
+VAR LatestMonth = [Latest Visible Month]
+RETURN
+    CALCULATE(
+        SELECTEDVALUE(
+            FactOrganisationMonthlyPerformance[DataQualityStatus],
+            "Multiple statuses"
+        ),
+        REMOVEFILTERS(DimDate),
+        DimDate[ReportingMonth] = LatestMonth
+    )
+
+Latest Refresh Label =
+"Refreshed " & FORMAT([Latest Refresh Timestamp], "dd MMM yyyy HH:mm")
+
+Executive Overview Title =
+"Executive Overview | " & [Latest Visible Month Label]
+
+Workforce Availability Title =
+"Workforce & Availability | " & [Latest Visible Month Label]
+
+-- ============================================================
+-- Card display text: Suite A layered KPI cards
+-- ============================================================
+
+Previous Visible Month Short Label =
+FORMAT(EDATE([Latest Visible Month], -1), "mmm")
+
+Total FTE Card Value =
+FORMAT([Total FTE Latest], "#,0.0")
+
+Total FTE Card Delta =
+VAR ChangeValue = [FTE Change %]
+RETURN
+    IF(
+        ISBLANK(ChangeValue),
+        BLANK(),
+        IF(ChangeValue >= 0, UNICHAR(9650), UNICHAR(9660))
+            & " "
+            & FORMAT(ABS(ChangeValue), "0.0%")
+            & " vs "
+            & [Previous Visible Month Short Label]
+    )
+
+Available FTE Card Value =
+FORMAT([Estimated Available FTE Latest], "#,0.0")
+
+Available FTE Card Delta =
+VAR ChangeValue = [Available FTE Change %]
+RETURN
+    IF(
+        ISBLANK(ChangeValue),
+        BLANK(),
+        IF(ChangeValue >= 0, UNICHAR(9650), UNICHAR(9660))
+            & " "
+            & FORMAT(ABS(ChangeValue), "0.0%")
+            & " vs "
+            & [Previous Visible Month Short Label]
+    )
+
+Sickness Absence Card Value =
+FORMAT([Sickness Absence Rate Latest], "0.0%")
+
+Sickness Absence Card Delta =
+VAR ChangeValue = [Absence Rate Change]
+RETURN
+    IF(
+        ISBLANK(ChangeValue),
+        BLANK(),
+        IF(ChangeValue <= 0, UNICHAR(9660), UNICHAR(9650))
+            & " "
+            & FORMAT(ABS(ChangeValue) * 100, "0.0")
+            & "pp vs "
+            & [Previous Visible Month Short Label]
+    )
+
+AE Attendances Card Value =
+FORMAT([Total Attendances Latest], "#,0")
+
+AE Attendances Card Delta =
+VAR ChangeValue = [Demand Change %]
+RETURN
+    IF(
+        ISBLANK(ChangeValue),
+        BLANK(),
+        IF(ChangeValue >= 0, UNICHAR(9650), UNICHAR(9660))
+            & " "
+            & FORMAT(ABS(ChangeValue), "0.0%")
+            & " vs "
+            & [Previous Visible Month Short Label]
+    )
+
+Four Hour Performance Card Value =
+FORMAT([Four-Hour Performance Latest], "0.0%")
+
+Four Hour Performance Card Delta =
+VAR VarianceValue = [Four-Hour Variance to Reference]
+RETURN
+    IF(
+        ISBLANK(VarianceValue),
+        BLANK(),
+        IF(VarianceValue >= 0, UNICHAR(9650), UNICHAR(9660))
+            & " "
+            & FORMAT(ABS(VarianceValue) * 100, "0.0")
+            & "pp vs 78% reference"
+    )
+
+Pressure Index Card Value =
+FORMAT([Attendances per Available FTE Latest], "0.00")
+
+Pressure Index Card Delta =
+VAR ChangeValue = [Attendances per Available FTE Change %]
+RETURN
+    IF(
+        ISBLANK(ChangeValue),
+        BLANK(),
+        IF(ChangeValue >= 0, UNICHAR(9650), UNICHAR(9660))
+            & " "
+            & FORMAT(ABS(ChangeValue), "0.0%")
+            & " vs "
+            & [Previous Visible Month Short Label]
+    )
+
+Organisation Detail Title =
+VAR OrganisationName =
+    SELECTEDVALUE(DimOrganisation[CanonicalOrganisationName], "All organisations")
+RETURN
+    OrganisationName & " | " & [Latest Visible Month Label]
