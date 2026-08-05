@@ -1,0 +1,3 @@
+OrganisationCode,CanonicalOrganisationName,InclusionFlag
+RTEST,Test NHS Trust,True
+ROUT,Out of Scope Trust,False

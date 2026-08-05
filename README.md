@@ -44,6 +44,10 @@ The final Excel delivery is [`03_power_query/power_query_control_full_year_basel
 
 The Phase 10 investigation screens the London cohort for providers with broadly stable workforce FTE and a material deterioration in four-hour performance. It separates observed patterns from causal claims and documents the operational evidence required for follow-up. See [`08_ad_hoc_analysis/four_hour_performance_investigation.md`](08_ad_hoc_analysis/four_hour_performance_investigation.md).
 
+### Phase 11 — Reusable reporting skill
+
+The reusable reporting Skill in [`09_automation_skill`](09_automation_skill) turns the controlled monthly workflow into a documented, repeatable intake process. It preserves source lineage, stops on critical input or schema failures, classifies records as Accepted, Rejected or Review Required, provides controlled CSV/XLSX outputs and drafts non-causal management commentary. The package includes validation gates, KPI rules, reusable output templates, a conservative validation runner and acceptance/failure test cases.
+
 ## Repository structure
 
 ```text

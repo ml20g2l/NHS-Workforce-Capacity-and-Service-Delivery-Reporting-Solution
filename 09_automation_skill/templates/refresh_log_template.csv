@@ -1,0 +1,1 @@
+RefreshId,RefreshTimestamp,Status,WorkforceFiles,AbsenceFiles,ActivityFiles,ReportingPeriodStart,ReportingPeriodEnd,RawRows,AcceptedRows,RejectedRows,ReviewRequiredRows,Warnings,CriticalErrors,PreviousRefreshStatus,OutputFolder
