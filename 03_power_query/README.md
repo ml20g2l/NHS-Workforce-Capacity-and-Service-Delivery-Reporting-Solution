@@ -113,10 +113,13 @@ In Excel:
 | 38 | `wrkAbsenceOrgMonth` | `76_wrkAbsenceOrgMonth.pq` | Connection only |
 | 39 | `wrkServiceOrgMonth` | `77_wrkServiceOrgMonth.pq` | Connection only |
 | 40 | `FactOrganisationMonthlyPerformance` | `78_factOrganisationMonthlyPerformance.pq` | Worksheet table + Data Model |
+| 41 | `FactWorkforceReporting` | `79_factWorkforceReporting.pq` | Power BI Data Model; connection only in Excel |
 
-Queries 32–40 are the model-ready reporting layer added after the recurring
+Queries 32–41 are the model-ready reporting layer added after the recurring
 refresh simulation. They preserve the source-specific grains and create a
-safe Month × Organisation summary for cross-source PivotTable reporting.
+safe Month × Organisation summary for cross-source reporting.
+`FactWorkforceReporting` restricts staff-mix visuals to the four additive
+top-level workforce groups and prevents hierarchical double counting.
 
 ### Data Model relationships
 

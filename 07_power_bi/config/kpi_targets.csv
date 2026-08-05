@@ -1,0 +1,2 @@
+MetricKey,MetricName,TargetValue,Unit,EffectiveFrom,EffectiveTo,TargetType,Applicability,SourceAuthority,SourceURL,DisplayLabel,Caveat
+FOUR_HOUR_PERFORMANCE,Four-Hour A&E Performance,0.78,Percentage,2024-04-01,2025-03-31,Official period-end objective,March 2025 year-end objective used as a reference benchmark,NHS England,https://www.england.nhs.uk/long-read/2024-25-priorities-and-operational-planning-guidance/,78% March 2025 objective,This is the 2024/25 March objective and not a separately published monthly provider target

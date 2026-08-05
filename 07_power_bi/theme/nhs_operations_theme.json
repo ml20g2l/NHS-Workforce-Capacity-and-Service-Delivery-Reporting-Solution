@@ -1,0 +1,14 @@
+{
+  "name": "NHS Operations Reporting",
+  "dataColors": [
+    "#2F75B5",
+    "#2A9D8F",
+    "#F4A261",
+    "#E9C46A",
+    "#6C5CE7",
+    "#C76D7E"
+  ],
+  "background": "#F4F6F8",
+  "foreground": "#263238",
+  "tableAccent": "#2F75B5"
+}

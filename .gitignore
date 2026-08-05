@@ -16,3 +16,13 @@ work/
 # Intermediate Power Query workbooks; publish only the final full-year workbook
 03_power_query/power_query_control.xlsx
 03_power_query/power_query_control_cycle*.xlsx
+
+# Archived source extracts and generated reporting sources
+02_source_data/archive/
+02_source_data/raw/workforce/nhs_workforce_statistics_2025-03_csv/
+04_processed_data/reporting_sources/
+
+# Local-only Power BI design concepts and Korean build guides
+07_power_bi/design_concepts_local/
+07_power_bi/html_prototype/
+07_power_bi/manual_guides_local/

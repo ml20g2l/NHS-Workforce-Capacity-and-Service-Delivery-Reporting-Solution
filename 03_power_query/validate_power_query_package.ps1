@@ -48,7 +48,8 @@ $expectedFiles = @(
     "75_wrkWorkforceOrgMonth.pq",
     "76_wrkAbsenceOrgMonth.pq",
     "77_wrkServiceOrgMonth.pq",
-    "78_factOrganisationMonthlyPerformance.pq"
+    "78_factOrganisationMonthlyPerformance.pq",
+    "79_factWorkforceReporting.pq"
 )
 
 $failures = [System.Collections.Generic.List[string]]::new()
@@ -151,6 +152,12 @@ $modelTokens = @{
     "72_factWorkforce.pq" = @("OrganisationKey", "StaffGroupKey", "Headcount", "FTE")
     "73_factAbsence.pq" = @("OrganisationKey", "SicknessAbsenceRate")
     "74_factServiceActivity.pq" = @("TotalAttendances", "FourHourPerformanceRate")
+    "79_factWorkforceReporting.pq" = @(
+        "ReportingStaffGroupSortOrders",
+        "StaffGroupReportingScope",
+        "Headcount",
+        "FTE"
+    )
     "78_factOrganisationMonthlyPerformance.pq" = @(
         "EstimatedAvailableFTE",
         "AttendancesPerAvailableFTE",

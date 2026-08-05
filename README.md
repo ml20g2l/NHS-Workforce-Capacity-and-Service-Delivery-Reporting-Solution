@@ -1,63 +1,63 @@
 # NHS Workforce Capacity & Service Delivery Reporting
 
-This portfolio project simulates a recurring monthly operational reporting process using public NHS workforce, sickness absence and A&E activity data.
+This portfolio project simulates a repeatable monthly operational reporting process using public NHS workforce, sickness absence and A&E activity data.
 
-Each reporting period is treated as a new operational input. Incoming files are validated, reconciled against previous submissions, transformed into governed KPI outputs and prepared for Excel and Power BI reporting for non-technical operational managers.
+Rather than analysing a one-off historical dataset, each reporting period is treated as a new operational input. Files are validated, reconciled against prior submissions, transformed into governed KPI outputs and published for non-technical operational managers through Excel and Power BI.
 
-## Current Status
+## Reporting scope
 
-- Phase 1 project brief completed.
-- Phase 2 official source files and source register completed for April 2024 to March 2025.
-- Phase 3 KPI dictionary completed using confirmed source fields.
-- Phase 4 star-schema design completed, including a safe organisation-month summary grain.
-- Phase 5 Power Query package completed with 40 ordered M queries, file-version selection, row-level provenance and a model-ready reporting layer.
-- Phase 6 data-quality framework completed with a 42-rule matrix, exception outputs and reconciliation controls.
-- Phase 7 recurring reporting simulation completed for the Q1 baseline, July extension and controlled duplicate/revised-file scenario.
-- The full-year Excel reporting workbook now includes refreshed outputs, active Data Model relationships and three manager-facing PivotTable views.
-- A controlled 148-organisation stable reference has been created; the reporting cohort is the 20 London providers present in all three sources for all 12 months.
+- **Reporting period:** April 2024 to March 2025
+- **Cohort:** 20 London providers consistently represented across the three source areas
+- **Sources:** NHS Workforce Statistics, NHS Sickness Absence Rates, and A&E Attendances and Emergency Admissions
+- **Grain for cross-source comparison:** reporting month × organisation
 
-## Phase 7 Reporting-Cycle Simulation
+## Delivered solution
 
-Historical monthly files were introduced sequentially through three
-reproducible cycle inputs: an April–June baseline, July addition, and a
-controlled duplicate/revised-file test. The completed simulation and
-validation evidence are documented in
-`10_documentation/reporting_cycle_simulation.md`.
+- A documented project brief, source register, KPI dictionary and star-schema design.
+- A Power Query pipeline with file-version selection, source provenance, record classification, exception outputs and reconciliation controls.
+- A recurring-reporting simulation covering a baseline load, a new-period addition and a controlled duplicate/revised-file scenario.
+- An Excel reporting workbook with refreshed outputs, active Data Model relationships and manager-facing PivotTable views.
+- A Power BI self-service dashboard with six KPI-led reporting experiences, including a hidden organisation drill-through page.
 
-The final Excel deliverable is
-`03_power_query/power_query_control_full_year_baseline.xlsx`. It contains the
-full April 2024 to March 2025 reporting period, refreshed Power Query outputs,
-the star-schema Data Model and manager-facing PivotTables. Query definitions,
-load roles and relationships are documented in `03_power_query/README.md`.
+## Power BI dashboard
 
-The readiness review is documented in `10_documentation/phase_1_to_6_readiness_review.md`.
+Open [`07_power_bi/NHS_Workforce_Capacity_Service_Delivery.pbix`](07_power_bi/NHS_Workforce_Capacity_Service_Delivery.pbix) to view the completed dashboard.
 
-## Repository Structure
+Visible pages:
+
+1. **Executive Overview** — workforce, availability, demand, delivery performance and management alerts.
+2. **Workforce & Availability** — FTE, headcount, sickness absence, staff-group mix and an organisation absence watchlist.
+3. **Demand & Delivery** — attendances, admissions, four-hour performance, long waits and a delivery watchlist.
+4. **Capacity Pressure** — demand-to-capacity proxy, month-on-month movement and provider comparison.
+5. **Data Quality & Refresh** — record status, active source files, reconciliation totals and exception visibility.
+
+The hidden **Organisation Detail** page supports drill-through from organisation-level visuals and retains the reporting-month selection. Each visible page includes clear slicers and a reset-filter control.
+
+## Reporting controls
+
+Historical monthly files were introduced sequentially through three reproducible cycle inputs: an April–June baseline, a July addition, and a controlled duplicate/revised-file test. The completed evidence is documented in [`10_documentation/reporting_cycle_simulation.md`](10_documentation/reporting_cycle_simulation.md).
+
+The final Excel delivery is [`03_power_query/power_query_control_full_year_baseline.xlsx`](03_power_query/power_query_control_full_year_baseline.xlsx). Power Query definitions, load roles and relationships are documented in [`03_power_query/README.md`](03_power_query/README.md). Power BI model notes, DAX measures, controls and the dashboard theme are in [`07_power_bi`](07_power_bi).
+
+## Repository structure
 
 ```text
 01_project_brief/
 02_source_data/
-  raw/
-  reference/
 03_power_query/
-  m/
 04_processed_data/
 05_reporting_controls/
-  data_quality/
-  reconciliation/
-  exception_logs/
-  refresh_logs/
-  kpi_dictionary/
 06_excel_reporting/
 07_power_bi/
 08_ad_hoc_analysis/
 09_automation_skill/
 10_documentation/
-README.md
 ```
 
-## Data Boundary
+## Data boundary and limitations
 
-The project uses public, aggregate NHS statistics only. It does not involve internal NHS systems, patient-level data or employee-level data.
+This project uses public aggregate NHS statistics only. It does not use internal NHS systems, patient-level data or employee-level data.
 
-See [the project brief](01_project_brief/project_brief.md) for scope, users, business questions, controls, KPIs, limitations and success criteria.
+Estimated available FTE, attendances per available FTE, capacity-pressure indicators and risk flags are analytical proxies. They support operational discussion but must not be interpreted as causal findings, roster-level capacity measures, clinical productivity measures or performance standards.
+
+See [the project brief](01_project_brief/project_brief.md) for business context, reporting users, KPI governance, scope, limitations and success criteria.
